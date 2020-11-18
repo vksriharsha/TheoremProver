@@ -23,10 +23,30 @@ public class CNFBuilder {
         syntaxParser = new SyntaxParser(file);
         expressionTrees = syntaxParser.getExpressionTrees();
 
+    }
+
+    public void buildCNFForAll(){
+
         for(ExpressionTree et : expressionTrees){
             buildCNFBottomUp(et);
         }
 
+    }
+
+    public SyntaxParser getSyntaxParser() {
+        return syntaxParser;
+    }
+
+    public void setSyntaxParser(SyntaxParser syntaxParser) {
+        this.syntaxParser = syntaxParser;
+    }
+
+    public List<ExpressionTree> getExpressionTrees() {
+        return expressionTrees;
+    }
+
+    public void setExpressionTrees(List<ExpressionTree> expressionTrees) {
+        this.expressionTrees = expressionTrees;
     }
 
     public void buildCNFBottomUp(ExpressionTree node) {

@@ -58,6 +58,24 @@ public class SyntaxParser {
     }
 
 
+    public TheoremReader getTheoremReader() {
+        return theoremReader;
+    }
+
+    public void setTheoremReader(TheoremReader theoremReader) {
+        this.theoremReader = theoremReader;
+    }
+
+    public ExpressionTree getExpressionTree(List<String> clause){
+
+        List<String> postfix = convertToPostfix(clause);
+        ExpressionTree tree = convertPostfixToExpressionTree(postfix);
+
+        return tree;
+    }
+
+
+
     public List<String> tokenizeClause(String clause) {
 
         char[] clauseChars = clause.toCharArray();
@@ -198,7 +216,14 @@ public class SyntaxParser {
                     prevCharDImpl = false;
                 }
 
-            } else {
+            }
+            else if(c == ' '){
+                prevCharAnd = false;
+                prevCharOr = false;
+                prevCharImpl = false;
+                prevCharDImpl = false;
+            }
+            else {
                 sequence += c;
             }
 
@@ -219,6 +244,7 @@ public class SyntaxParser {
 
         List<String> postfixClause = new ArrayList<String>();
         Stack<String> operatorStack = new Stack<>();
+
 
         for (String token : infixClause) {
 
@@ -246,12 +272,15 @@ public class SyntaxParser {
                     } else if (stackPrecedence.get(stackTop) == inputPrecedence.get(token)) {
                         if (token == NOT && stackTop == NOT) {
                             operatorStack.pop();
-                        } else {
+                        } else if(token == RPAR){
                             while (!operatorStack.empty() && stackPrecedence.get(operatorStack.peek()) >= inputPrecedence.get(token)) {
                                 String topToken = operatorStack.pop();
                                 postfixClause.add(topToken);
 
                             }
+                            operatorStack.push(token);
+                        }
+                        else{
                             operatorStack.push(token);
                         }
                     } else {
@@ -282,7 +311,9 @@ public class SyntaxParser {
         Stack<ExpressionTree> operandStack = new Stack<>();
         ExpressionTree rootOfTree = null;
 
+
         for (String token : postfixExpression) {
+
             if (token.equals(AND) || token.equals(OR)
                     || token.equals(IMPL) || token.equals(DIMPL)) {
 

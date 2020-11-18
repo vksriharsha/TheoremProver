@@ -1,6 +1,7 @@
 package edu.iastate.cs472.proj2;
 
 import java.util.LinkedList;
+import java.util.Objects;
 
 public class Clause {
     private LinkedList<Literal> literals;
@@ -19,7 +20,7 @@ public class Clause {
         LinkedList<Literal> literals = this.getLiterals();
 
         int i=0;
-        clause += "(";
+
         for(Literal l : literals){
 
             clause += l.toString();
@@ -28,8 +29,20 @@ public class Clause {
             }
             i++;
         }
-        clause += ")";
 
         return clause.trim();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Clause clause = (Clause) o;
+        return Objects.equals(literals, clause.literals);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(literals);
     }
 }
