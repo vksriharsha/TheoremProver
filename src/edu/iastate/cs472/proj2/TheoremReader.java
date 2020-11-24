@@ -1,5 +1,9 @@
 package edu.iastate.cs472.proj2;
 
+/**
+ * @author Kumara Sri Harsha Vajjhala (harshavk@iastate.edu)
+ */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

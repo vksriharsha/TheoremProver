@@ -1,5 +1,9 @@
 package edu.iastate.cs472.proj2;
 
+/**
+ * @author Kumara Sri Harsha Vajjhala (harshavk@iastate.edu)
+ */
+
 import java.util.LinkedList;
 import java.util.Objects;
 

@@ -1,5 +1,9 @@
 package edu.iastate.cs472.proj2;
 
+/**
+ * @author Kumara Sri Harsha Vajjhala (harshavk@iastate.edu)
+ */
+
 import java.io.File;
 import java.util.*;
 
@@ -22,7 +26,7 @@ public class Resolution {
     }
 
 
-    public boolean PL_RESOLUTION(List<ExpressionTree> KB, ExpressionTree alpha) {
+    public boolean PL_RESOLUTION(List<ExpressionTree> KB, ExpressionTree alpha, String sentenceToProve) {
 
         HashSet<Clause> kbClauses = new HashSet<>();
         LinkedList<Clause> KBList = new LinkedList<>();
@@ -43,29 +47,53 @@ public class Resolution {
 
         newClauses.add(prevResolved);
 
+        System.out.println();
+        System.out.println("Proof by refutation:");
+        System.out.println();
+
         while (true) {
 
             HashSet<Clause> fresh = new HashSet<>();
 
             for (Clause Ci : kbClauses) {
                 for (Clause Cj : newClauses) {
-                    HashSet<Clause> resolvent = PL_RESOLVE(Ci, Cj);
-                    if (resolvent.size() == 1) {
-                        for (Clause r : resolvent) {
+                    if (!Ci.equals(Cj)) {
+                        HashSet<Clause> resolvent = PL_RESOLVE(Ci, Cj);
+                        if (resolvent.size() == 1) {
+                            for (Clause r : resolvent) {
 
-                            if (r.getLiterals().size() == 0) return true;
+                                System.out.println(Cj);
+                                System.out.println(Ci);
+                                System.out.println("--------------------");
+                                if (r.getLiterals().size() == 0) {
+                                    System.out.println("empty clause");
+                                    System.out.println();
+                                    System.out.println("The KB entails "+sentenceToProve+".");
+                                    System.out.println();
+                                    return true;
+                                }
+                                else {
+                                    System.out.println(r);
+                                    System.out.println();
+                                }
+
+                            }
+
+                            fresh.addAll(resolvent);
                         }
-
-                        fresh.addAll(resolvent);
                     }
                 }
             }
 
-            System.out.println("New Clauses : " + newClauses);
-            System.out.println("Fresh : " + fresh);
             kbClauses.addAll(newClauses);
 
-            if (kbClauses.containsAll(fresh)) return false;
+            if (kbClauses.containsAll(fresh)){
+                System.out.println();
+                System.out.println("No new clauses are added.");
+                System.out.println();
+                System.out.println("The KB does not entail "+sentenceToProve+".");
+                return false;
+            }
 
             newClauses.clear();
             newClauses.addAll(fresh);
@@ -109,8 +137,11 @@ public class Resolution {
 
         if (resolved) {
 
-            for (Literal li : Ci_Arr) {
-                for (Literal lj : Cj_Arr) {
+            Literal[] Ci_Arr2 = Ci_Literals.toArray(new Literal[Ci_Literals.size()]);
+            Literal[] Cj_Arr2 = Cj_Literals.toArray(new Literal[Cj_Literals.size()]);
+
+            for (Literal li : Ci_Arr2) {
+                for (Literal lj : Cj_Arr2) {
 
                     if (li.getName().equals(lj.getName())) {
                         Cj_Literals.remove(lj);
@@ -178,10 +209,7 @@ public class Resolution {
             System.out.println(sentenceToProveExprTree.getCnf());
 
 
-            boolean isEntails = res.PL_RESOLUTION(res.cnfBuilder.getExpressionTrees(), sentenceToProveExprTree);
-
-            System.out.println(isEntails);
-            System.out.println();
+            boolean isEntails = res.PL_RESOLUTION(res.cnfBuilder.getExpressionTrees(), sentenceToProveExprTree, sentence);
 
 
         }
